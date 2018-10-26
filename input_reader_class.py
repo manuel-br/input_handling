@@ -9,91 +9,85 @@ class InputReader:
     def __init__(self, filename):
         self.filename = filename
         try:
-            with open(self.filename, 'r') as input:
-                self.content = input.read()
+            with open(self.filename, 'r') as f:
+                self.content = f.read()
         except FileNotFoundError:
             print('Selected file was not found!')
+            exit()
+        self.incomp_group_check()
+        self.empty_group_check()
+        self.del_comments()
+        self.clear_interspace()
+        self.del_emptylines()
+        self.del_whitespace()
+        self.groupseperate()
+        self.groupsplit()
 
     def incomp_group_check(self):
-        incomp_group = re.compile('@(?!end)[\w\s:.-/!]*@(?!end)')
-        if incomp_group.findall(self.content) != []:
+        """ Checking for any incomplete groups: """
+        if re.findall('@(?!end)[^@]*@(?!end)|@end[^@]*@end', self.content) != []:
             print('There is at least one incomplete group in the input-file!')
             exit()
 
     def empty_group_check(self):
-        empty_group = re.compile('@\s*@end')
-        if empty_group.findall(self.content) != []:
+        """ Checking for any empty groups: """
+        if re.findall('@\s*@end', self.content) != []:
             print('There is at least one empty group in the input-file!')
             exit()
 
     def del_comments(self):
-        comment = re.compile('![ \w:.-/]*\n')
-        self.content = comment.sub('\n',self.content)
+        """ Deleting all comments: """
+        self.content = re.sub('!.*', '\n', self.content)
 
     def clear_interspace(self):
-        interspace = re.compile('@end[\s\w:.-/]*@')
-        self.content = interspace.sub('@end\n@',self.content)
+        """ Deleting content, that's not within a group: """
+        self.content = re.sub('@end[^@]*@', '@end\n@', self.content)
 
     def del_emptylines(self):
+        """ Deleting empty lines: """
         self.content = self.content.strip()
-        emptyline = re.compile('\n\s*\n')
-        self.content = emptyline.sub('\n',self.content)
+        self.content = re.sub('\n\s*\n', '\n', self.content)
 
     def del_whitespace(self):
-        whitespace = re.compile(' +')
-        self.content = whitespace.sub(' ',self.content)
-        whitespace_bol = re.compile('\n +')
-        self.content = whitespace_bol.sub('\n',self.content)
-        whitespace_eol = re.compile(' +\n')
-        self.content = whitespace_eol.sub('\n',self.content)
+        """ Deleting unnecassary whitespace: """
+        self.content = re.sub(' +', ' ', self.content)
+        self.content = re.sub('\n +', '\n', self.content)
+        self.content = re.sub(' +\n', '\n', self.content)
 
     def groupseperate(self):
-        group = re.compile('@[\s\w:.\-\/]*\w+[\s\w:.\-\/]*@end')
-        self.grouplist = group.findall(self.content)
+        """ Creating a list with every group as an element: """
+        self.grouplist = re.findall('@(?!end)\s*\w+[^@]*@end', self.content)
 
     def groupsplit(self):
+        """ Splitting every element(group) into a list with every
+        line as an element, while deleting '@' and '@end' tags: """
         j = 0
         for m in self.grouplist:
             self.grouplist[j] = self.grouplist[j].lstrip('@')
-            self.grouplist[j] = self.grouplist[j].rstrip('\n@end')
+            self.grouplist[j] = self.grouplist[j].rstrip('end')
+            self.grouplist[j] = self.grouplist[j].rstrip('\n@')
             self.grouplist[j] = self.grouplist[j].split('\n')
             j += 1
 
 
-
 if __name__ == '__main__':
-    
-    check = True
+    # Reading the filename manually from the command prompt:    
     try:
         filename = str(sys.argv[1])
     except IndexError:
         print('Please select an input-file following this scheme:')
         print('python input_reader_class.py <input-file>')
         exit()
-
+    
+    # Checking for the right extension (.inp):
     if filename.endswith('.inp'):
         pass
     else:
         print('Selected file is either not an input-file or has the wrong extension!')
         exit()
 
+    # Creating an instance of the InputReader class:
     fn = InputReader(filename)
-
-    fn.incomp_group_check()
-
-    fn.empty_group_check()
-
-    fn.del_comments()
-
-    fn.clear_interspace()
-
-    fn.del_emptylines()
-
-    fn.del_whitespace()
-
-    fn.groupseperate()
-
-    fn.groupsplit()
 
     print(fn.grouplist)
 

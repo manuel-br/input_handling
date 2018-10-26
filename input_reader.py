@@ -24,8 +24,8 @@ else:
 # Reading the input-file and store it as a string:
 print('Reading input-file...')
 try:
-    with open(filename, 'r') as input:
-        content = input.read()
+    with open(filename, 'r') as f:
+        content = f.read()
 except FileNotFoundError:
     print('Selected file was not found.')
     exit()
