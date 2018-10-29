@@ -1,0 +1,25 @@
+@jobtype
+randomstring1
+randomstring2
+@end
+
+@molecule
+0 1
+Au 1 2 3
+Ag 4 5 6
+S  7 8 9
+C  3 6 7
+@end
+
+@additional group
+randomstring2.1
+randomstring2.2
+
+randomstring2.3
+
+@specifications
+randomstring3
+randomstring4
+@end
+
+
