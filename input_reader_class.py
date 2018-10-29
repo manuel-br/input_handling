@@ -4,36 +4,45 @@ import sys
 import re
 
 class InputReader:
-    """ This class stores the content of a selected file as a string initially and provides some string-manipulation methods. """
-
+    """ This class stores the content of a selected file as a
+    string and provides some string-manipulation methods. """
     def __init__(self, filename):
         self.filename = filename
+        self.parse_success = True
+        """ Calling every method as long as no error occurs. """
+        self.reading_file()
+        if self.parse_success == True:
+            self.incomp_group_check()
+            if self.parse_success == True:
+                self.empty_group_check()
+                if self.parse_success == True:
+                    self.del_comments()
+                    self.clear_interspace()
+                    self.del_emptylines()
+                    self.del_whitespace()
+                    self.groupseperate()
+                    self.groupsplit()
+
+    def reading_file(self):
+        """ Storing content of selected file in an attribute of the instance: """
         try:
             with open(self.filename, 'r') as f:
                 self.content = f.read()
         except FileNotFoundError:
             print('Selected file was not found!')
-            exit()
-        self.incomp_group_check()
-        self.empty_group_check()
-        self.del_comments()
-        self.clear_interspace()
-        self.del_emptylines()
-        self.del_whitespace()
-        self.groupseperate()
-        self.groupsplit()
+            self.parse_success = False
 
     def incomp_group_check(self):
         """ Checking for any incomplete groups: """
         if re.findall('@(?!end)[^@]*@(?!end)|@end[^@]*@end', self.content) != []:
             print('There is at least one incomplete group in the input-file!')
-            exit()
+            self.parse_success = False
 
     def empty_group_check(self):
         """ Checking for any empty groups: """
         if re.findall('@\s*@end', self.content) != []:
             print('There is at least one empty group in the input-file!')
-            exit()
+            self.parse_success = False
 
     def del_comments(self):
         """ Deleting all comments: """
@@ -69,7 +78,6 @@ class InputReader:
             self.grouplist[j] = self.grouplist[j].split('\n')
             j += 1
 
-
 if __name__ == '__main__':
     # Reading the filename manually from the command prompt:    
     try:
@@ -77,17 +85,18 @@ if __name__ == '__main__':
     except IndexError:
         print('Please select an input-file following this scheme:')
         print('python input_reader_class.py <input-file>')
-        exit()
+        sys.exit()
     
     # Checking for the right extension (.inp):
     if filename.endswith('.inp'):
         pass
     else:
         print('Selected file is either not an input-file or has the wrong extension!')
-        exit()
+        sys.exit()
 
     # Creating an instance of the InputReader class:
     fn = InputReader(filename)
-
-    print(fn.grouplist)
+    
+    if fn.parse_success == True:
+        print(fn.grouplist)
 
