@@ -10,18 +10,19 @@ class InputReader:
         self.filename = filename
         self.parse_success = True
         """ Calling every method as long as no error occurs. """
-        self.reading_file()
-        if self.parse_success == True:
+        try:
+            self.reading_file()
             self.incomp_group_check()
-            if self.parse_success == True:
-                self.empty_group_check()
-                if self.parse_success == True:
-                    self.del_comments()
-                    self.clear_interspace()
-                    self.del_emptylines()
-                    self.del_whitespace()
-                    self.groupseperate()
-                    self.groupsplit()
+            self.del_comments()
+            self.empty_group_check()
+            self.clear_interspace()
+            self.del_emptylines()
+            self.del_whitespace()
+            self.groupseperate()
+            self.groupsplit()
+        except Exception:
+            self.parse_success = False
+
 
     def reading_file(self):
         """ Storing content of selected file in an attribute of the instance: """
@@ -30,19 +31,19 @@ class InputReader:
                 self.content = f.read()
         except FileNotFoundError:
             print('Selected file was not found!')
-            self.parse_success = False
+            raise Exception
 
     def incomp_group_check(self):
         """ Checking for any incomplete groups: """
-        if re.findall('@(?!end)[^@]*@(?!end)|@end[^@]*@end', self.content) != []:
+        if re.findall('@(?!end[\s])[^@]*@(?!end(?![\w]))|@end\s[^@]*@end(?![\w])', self.content) != []:
             print('There is at least one incomplete group in the input-file!')
-            self.parse_success = False
+            raise Exception
 
     def empty_group_check(self):
         """ Checking for any empty groups: """
-        if re.findall('@\s*@end', self.content) != []:
+        if re.findall('@\s*\w*\s*@end(?![\w])', self.content) != []:
             print('There is at least one empty group in the input-file!')
-            self.parse_success = False
+            raise Exception
 
     def del_comments(self):
         """ Deleting all comments: """
@@ -50,7 +51,7 @@ class InputReader:
 
     def clear_interspace(self):
         """ Deleting content, that's not within a group: """
-        self.content = re.sub('@end[^@]*@', '@end\n@', self.content)
+        self.content = re.sub('@end\s[^@]*@', '@end\n@', self.content)
 
     def del_emptylines(self):
         """ Deleting empty lines: """
@@ -65,15 +66,15 @@ class InputReader:
 
     def groupseperate(self):
         """ Creating a list with every group as an element: """
-        self.grouplist = re.findall('@(?!end)\s*\w+[^@]*@end', self.content)
+        self.grouplist = re.findall('@(?!end[\s])\s*\w+[^@]*@end(?![\w])', self.content)
 
     def groupsplit(self):
         """ Splitting every element(group) into a list with every
         line as an element, while deleting '@' and '@end' tags: """
         j = 0
         for m in self.grouplist:
-            self.grouplist[j] = self.grouplist[j].lstrip('@')
-            self.grouplist[j] = self.grouplist[j].rstrip('end')
+            self.grouplist[j] = self.grouplist[j].lstrip('@ \n')
+            self.grouplist[j] = self.grouplist[j].rstrip('end\n')
             self.grouplist[j] = self.grouplist[j].rstrip('\n@')
             self.grouplist[j] = self.grouplist[j].split('\n')
             j += 1
@@ -97,6 +98,6 @@ if __name__ == '__main__':
     # Creating an instance of the InputReader class:
     fn = InputReader(filename)
     
-    if fn.parse_success == True:
+    if fn.parse_success:
         print(fn.grouplist)
 

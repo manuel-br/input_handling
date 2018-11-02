@@ -3,11 +3,14 @@ randomstring1
 randomstring2
 @end
 
-@d@end
+@d
+content
+@end
 
 nonsense
 
 @testgroup
+doch ein keyword
 ! should this be considered as an empty group? (just the keyword)
 @end
 ! random comment
