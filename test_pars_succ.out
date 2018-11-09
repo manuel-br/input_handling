@@ -1,0 +1,13 @@
+[jobs]
+SinglePoint = energy
+[molecule]
+basis: DEF2-SVP
+Multiplicity: 1
+Charge: 0
+Units: Au
+xyz:
+ O 0.0 0.0 0.0
+ H 0.0 1.4 1.1
+ H 0.0 -1.4 1.1
+[progenv]
+BasisLibrary = /home/xinli/gitlab/VeloxChemMP/basis/
