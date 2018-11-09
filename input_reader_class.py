@@ -25,7 +25,7 @@ class InputReader:
 
 
     def reading_file(self):
-        """ Storing content of selected file in an attribute of the instance: """
+        """ Storing content of selected file in an attribute of the instance. """
         try:
             with open(self.filename, 'r') as f:
                 self.content = f.read()
@@ -34,43 +34,43 @@ class InputReader:
             raise Exception
 
     def incomp_group_check(self):
-        """ Checking for any incomplete groups: """
+        """ Checking for any incomplete groups. """
         if re.findall('@(?!end[\s])[^@]*@(?!end(?![\w]))|@end\s[^@]*@end(?![\w])', self.content) != []:
             print('There is at least one incomplete group in the input-file!')
             raise Exception
 
     def empty_group_check(self):
-        """ Checking for any empty groups: """
+        """ Checking for any empty groups. """
         if re.findall('@\s*\w*\s*@end(?![\w])', self.content) != []:
             print('There is at least one empty group in the input-file!')
             raise Exception
 
     def del_comments(self):
-        """ Deleting all comments: """
+        """ Deleting comments (marked by '!'). """
         self.content = re.sub('!.*', '\n', self.content)
 
     def clear_interspace(self):
-        """ Deleting content, that's not within a group: """
+        """ Deleting content, that's not within a group. """
         self.content = re.sub('@end\s[^@]*@', '@end\n@', self.content)
 
     def del_emptylines(self):
-        """ Deleting empty lines: """
+        """ Deleting empty lines. """
         self.content = self.content.strip()
         self.content = re.sub('\n\s*\n', '\n', self.content)
 
     def del_whitespace(self):
-        """ Deleting unnecassary whitespace: """
+        """ Deleting unnecassary whitespace. """
         self.content = re.sub(' +', ' ', self.content)
         self.content = re.sub('\n +', '\n', self.content)
         self.content = re.sub(' +\n', '\n', self.content)
 
     def groupseperate(self):
-        """ Creating a list with every group as an element: """
+        """ Creating a list with every group as an element. """
         self.grouplist = re.findall('@(?!end[\s])\s*\w+[^@]*@end(?![\w])', self.content)
 
     def groupsplit(self):
         """ Splitting every element(group) into a list with every
-        line as an element, while deleting '@' and '@end' tags: """
+        line as an element, while deleting '@' and '@end' tags. """
         j = 0
         for m in self.grouplist:
             self.grouplist[j] = self.grouplist[j].lstrip('@ \n')
