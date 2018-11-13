@@ -20,6 +20,7 @@ class InputReader:
             self.del_whitespace()
             self.groupseperate()
             self.groupsplit()
+            self.convert_dict()
         except Exception:
             self.parse_success = False
 
@@ -47,7 +48,7 @@ class InputReader:
 
     def del_comments(self):
         """ Deleting comments (marked by '!'). """
-        self.content = re.sub('!.*', '\n', self.content)
+        self.content = re.sub('!.*', '', self.content)
 
     def clear_interspace(self):
         """ Deleting content, that's not within a group. """
@@ -79,6 +80,12 @@ class InputReader:
             self.grouplist[j] = self.grouplist[j].split('\n')
             j += 1
 
+    def convert_dict(self):
+        """ Converting the list of lists into a dictionary with groupnames as keys. """
+        self.groupdict = {}
+        for n in self.grouplist:
+            self.groupdict[n[0]] = (n[1:])
+
 if __name__ == '__main__':
     # Reading the filename manually from the command prompt:    
     try:
@@ -99,5 +106,5 @@ if __name__ == '__main__':
     fn = InputReader(filename)
     
     if fn.parse_success:
-        print(fn.grouplist)
+        print(fn.groupdict)
 
