@@ -4,7 +4,7 @@ import sys
 import re
 import configparser
 
-class InputReader:
+class InputParser:
     """ This class parses VeloxChem input files (in INI format)
     using the built-in configparser package in python. """
     def __init__(self, filename):
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         sys.exit()
 
     # Creating an instance of the InputReader class:
-    fn = InputReader(filename)
+    fn = InputParser(filename)
     
     # Printing sections, values and keys in case of successful parsing:
     if fn.parse_success:
