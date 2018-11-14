@@ -3,15 +3,14 @@
 #test_input_conparse.py
 
 import unittest
-from input_conparse import InputReader
+from input_conparse import InputParser
 
-class TestInputReader(unittest.TestCase):
+class TestInputParser(unittest.TestCase):
     """ This is a test class for testing the input_conparse module. """
-
-    def test_input_reader_class(self):
-        instance = InputReader('test_pars_succ.inp')
+    def test_input_conparse(self):
+        instance = InputParser('test_conparse_succ.inp')
         res = str(instance.content)
-        with open('test_pars_succ.out', 'r') as f:
+        with open('test_conparse_succ.out', 'r') as f:
             raw = f.read()
             exp = raw.rstrip('\n')
         self.assertEqual(exp, res)
