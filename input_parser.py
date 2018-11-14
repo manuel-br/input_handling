@@ -3,7 +3,7 @@
 import sys
 import re
 
-class InputReader:
+class InputParser:
     """ This class stores the content of a selected file as a
     string and provides some string-manipulation methods. """
     def __init__(self, filename):
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         sys.exit()
 
     # Creating an instance of the InputReader class:
-    fn = InputReader(filename)
+    fn = InputParser(filename)
     
     if fn.parse_success:
         print(fn.groupdict)
