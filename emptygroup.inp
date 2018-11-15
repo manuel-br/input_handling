@@ -3,6 +3,10 @@ randomstring1
 randomstring2
 @end
 
+@method settings
+
+@end
+
 @molecule
 0 1
 Au 1 2 3
@@ -11,9 +15,6 @@ S  7 8 9
 C  3 6 7
 @end
 
-@ 
-
-@end
 
 @specifications
 randomstring3
