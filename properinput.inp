@@ -1,17 +1,15 @@
      @jobtype
-randomstring1
-randomstring2
+task: geometry optimization
+method: hatree-fock
 @end
 
-@d
-content
+@method settings
+functional : diesdas
 @end
-
 nonsense
 
 @testgroup
-doch ein keyword
-! should this be considered as an empty group? (just the keyword)
+keyword : value
 @end
 ! random comment
 
@@ -20,7 +18,10 @@ asdfsadf
 @end
 
 @molecule
-0 1
+charge : 0
+multiplicity : 1
+basis: cc-pVTZ
+xyz:
 C 1.0 -2.0 3.0
 C 1.1 2.1 3.1 ! Another random comment
 H 1.2 2.2 3.2
@@ -29,7 +30,7 @@ H 1.3 2.3 3.3
 
 @specifications
 randomstring3
-randomstring4
+randomstring4: value
 @end
 
 
