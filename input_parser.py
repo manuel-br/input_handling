@@ -4,8 +4,8 @@ import sys
 import re
 
 class InputParser:
-    """ This class stores the content of a selected file as a
-    string and provides some string-manipulation methods. """
+    """ This class stores the content of a selected VeloxChem input file
+    as a string and provides some string-manipulation methods. """
     def __init__(self, filename):
         self.filename = filename
         self.parse_success = True
@@ -24,7 +24,6 @@ class InputParser:
         except Exception:
             self.parse_success = False
 
-
     def reading_file(self):
         """ Storing content of selected file in an attribute of the instance. """
         try:
@@ -42,7 +41,7 @@ class InputParser:
 
     def empty_group_check(self):
         """ Checking for any empty groups. """
-        if re.findall('@\s*\w*\s*@end(?![\w])', self.content) != []:
+        if re.findall('@[\w ]*\n\s*@end(?![\w])', self.content) != []:
             print('There is at least one empty group in the input-file!')
             raise Exception
 
@@ -72,19 +71,36 @@ class InputParser:
     def groupsplit(self):
         """ Splitting every element(group) into a list with every
         line as an element, while deleting '@' and '@end' tags. """
-        j = 0
-        for m in self.grouplist:
-            self.grouplist[j] = self.grouplist[j].lstrip('@ \n')
-            self.grouplist[j] = self.grouplist[j].rstrip('end\n')
-            self.grouplist[j] = self.grouplist[j].rstrip('\n@')
-            self.grouplist[j] = self.grouplist[j].split('\n')
-            j += 1
+        i = 0
+        for entry in self.grouplist:
+            self.grouplist[i] = self.grouplist[i].lstrip('@ \n')
+            self.grouplist[i] = self.grouplist[i].rstrip('end\n')
+            self.grouplist[i] = self.grouplist[i].rstrip('\n@')
+            self.grouplist[i] = self.grouplist[i].split('\n')
+            i += 1
 
     def convert_dict(self):
-        """ Converting the list of lists into a dictionary with groupnames as keys. """
+        """ Converting the list of lists into a dictionary with groupnames as keys
+        and group content as a dictionary itself. The geometry definition of the
+        molecule group is stored in a different dictionary. """
         self.groupdict = {}
-        for n in self.grouplist:
-            self.groupdict[n[0]] = (n[1:])
+        self.moldict = {}
+        l = 1
+        for j in self.grouplist:
+            inner_dic = {}
+            for k in j[1:]:
+                if ':' in k and 'xyz' not in k:
+                    inner_dic[k.split(':')[0].strip()] = k.split(':')[1].strip()
+                elif j[0] != 'molecule':
+                    inner_dic[k.strip()] = None
+                elif 'xyz' in k:
+                    pass
+                else:
+                    self.moldict[l] = k.strip()
+                    l += 1
+            self.groupdict[j[0]] = inner_dic
+            self.moldict['atoms'] = l-1
+
 
 if __name__ == '__main__':
     # Reading the filename manually from the command prompt:    
@@ -92,7 +108,7 @@ if __name__ == '__main__':
         filename = str(sys.argv[1])
     except IndexError:
         print('Please select an input-file following this scheme:')
-        print('python input_reader_class.py <input-file>')
+        print('python input_parser.py <input-file>')
         sys.exit()
     
     # Checking for the right extension (.inp):
@@ -102,9 +118,10 @@ if __name__ == '__main__':
         print('Selected file is either not an input-file or has the wrong extension!')
         sys.exit()
 
-    # Creating an instance of the InputReader class:
+    # Creating an instance of the InputParser class:
     fn = InputParser(filename)
     
     if fn.parse_success:
-        print(fn.groupdict)
+        print('Groups and keywords with values: ', fn.groupdict)
+        print('\nNumber of atoms, type and xyz coordinates: ', fn.moldict)
 
