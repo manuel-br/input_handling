@@ -18,6 +18,7 @@ class InputParser:
             self.clear_interspace()
             self.del_emptylines()
             self.del_whitespace()
+            self.lowercase_content()
             self.groupseperate()
             self.groupsplit()
             self.convert_dict()
@@ -64,6 +65,11 @@ class InputParser:
         self.content = re.sub('\n +', '\n', self.content)
         self.content = re.sub(' +\n', '\n', self.content)
 
+    def lowercase_content(self):
+        """ Lowercasing every alphabetical charakter. Atom labels will be
+        uppercased when the dictionary is created. """
+        self.content = self.content.lower()
+
     def groupseperate(self):
         """ Creating a list with every group as an element. """
         self.grouplist = re.findall('@(?!end[\s])\s*\w+[^@]*@end(?![\w])', self.content)
@@ -96,7 +102,7 @@ class InputParser:
                 elif 'xyz' in k:
                     pass
                 else:
-                    self.moldict[l] = k.strip()
+                    self.moldict[l] = k.strip().upper()
                     l += 1
             self.groupdict[j[0]] = inner_dic
             self.moldict['atoms'] = l-1
