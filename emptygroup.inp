@@ -1,24 +1,21 @@
 @jobtype
-randomstring1
-randomstring2
+task: geometry optimization
+method: hartree-fock
 @end
 
 @method settings
 
 @end
 
+! random comment
+
 @molecule
-0 1
-Au 1 2 3
-Ag 4 5 6
-S  7 8 9
-C  3 6 7
+charge: 0
+multiplicity: 1
+xyz:
+C 1.0 -2.0  3.0
+C 1.1  2.1  3.1  ! Another random comment
+H 1.2  2.2  3.2
+H 1.3  2.3  3.3
 @end
-
-
-@specifications
-randomstring3
-randomstring4
-@end
-
 
