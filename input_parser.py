@@ -105,8 +105,6 @@ class InputParser:
                     self.moldict[l] = k.strip().upper()
                     l += 1
             self.groupdict[j[0]] = inner_dic
-            self.moldict['atoms'] = l-1
-
 
 if __name__ == '__main__':
     # Reading the filename manually from the command prompt:    
