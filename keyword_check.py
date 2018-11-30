@@ -21,14 +21,14 @@ class KeywordCheck:
         self.jobtype_o_keywords = ['correlation']
         self.method_settings_m_keywords = []
         self.method_settings_o_keywords = ['functional']
-        self.molecule_m_keywords = ['charge', 'multiplicity', 'basis']
+        self.molecule_m_keywords = ['charge', 'multiplicity', 'basis', 'basis path', 'units']
         self.molecule_o_keywords = []
         self.specifications_m_keywords = ['kind']
         self.specifications_o_keywords = ['stepsize', 'print']
         # Defining possible string type values for every keyword:
-        self.values = {'task': ['geometry', 'geometry optimization', 'single point'], 'method': ['hartree-fock', 'hf', 'adc(1)', 'adc(2)', 'dft'], 'functional': ['b3lyp', 'pbe'], 'basis': ['def-pvdz'], 'kind': ['kind1', 'kind2'], 'stepsize': range(1000), 'print': range(10), 'charge': range(20), 'multiplicity': range(10)}
+        self.values = {'task': ['geometry', 'geometry optimization', 'single point'], 'method': ['hartree-fock', 'hf', 'adc(1)', 'adc(2)', 'dft'], 'functional': ['b3lyp', 'pbe'], 'units': ['au', 'angs'] 'basis': ['cc-pvdz', 'def-svp'], 'basis path': 'any path' 'kind': ['kind1', 'kind2'], 'stepsize': range(1000), 'print': range(10), 'charge': range(20), 'multiplicity': range(10)}
         # Defining keywords which require values (no default set):
-        self.keywords_m_values = ['task', 'method', 'functional', 'charge', 'multiplicity', 'basis']
+        self.keywords_m_values = ['task', 'method', 'functional', 'charge', 'multiplicity', 'basis', 'basis path', 'units']
 #___________________________________________________________________________
 
         try:
