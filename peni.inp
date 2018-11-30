@@ -5,7 +5,7 @@ SinglePoint: energy
 
 @basis
 def2-SVP
-@end 
+@end
 
 @molxyz 
 0 1 Au 
