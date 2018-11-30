@@ -4,11 +4,23 @@ import sys
 import re
 
 class InputParser:
-    """ Docstring here """
+    """ Provides functions for parsing VeloxChem input files into a format,
+    which passes the needed information to the rest of the program """
+    
     def __init__(self, filename):
-        self.filename = filename
-        self.parse_success = True
+        """ Initializes parsing process by setting success monitor value to TRUE """
 
+        self.success_monitor = True
+        
+        self.filename = filename
+
+
+    # defining main functions
+
+    def parse(self):
+        """ Calls every function needed for the parsing process depending on
+        the success of the parsing in different stages """
+        
         try:
 
             # reading selected file
@@ -22,13 +34,13 @@ class InputParser:
 
         except FileNotFoundError:
             print('Selected file was not found!')
-            self.parse_success = False
+            self.success_monitor = False
 
         except SyntaxError:
             print('Selected input file has bad syntax! You may check for incomplete or empty groups.')
-            self.parse_success =  False
+            self.success_monitor = False
 
-        if self.parse_success:
+        if self.success_monitor:
 
             # manipulation of input string
 
@@ -44,7 +56,15 @@ class InputParser:
             #self.check_moldict()
             self.convert_moldict()
 
-    # Definition of functions
+            return self.input_dict
+
+    def parse_success(self):
+        """ Performing the parsing process and returning parsing monitor value. """
+
+        self.parse()
+        return self.success_monitor
+
+    # defining subordinated functions
 
     def reading_file(self):
         """ Storing content of selected file as a string type """
@@ -107,7 +127,7 @@ class InputParser:
         and group content as a dictionary itself. The geometry definition of the
         molecule group is stored in a different dictionary. """
 
-        self.groupdict = {}
+        self.input_dict = {}
         self.moldict = {}
         l = 1
         for j in self.grouplist:
@@ -122,49 +142,37 @@ class InputParser:
                 else:
                     self.moldict[l] = k.strip().upper()
                     l += 1
-            self.groupdict[j[0]] = inner_dic
-
-    def check_moldict(self):
-        """ Checking if there are any information about the strucutre in the
-        moldict dictionary. """
-
-        if self.moldict != {}:
-            self.direct_parsing = True
-        else:
-            self.direct_parsing = False
+            self.input_dict[j[0]] = inner_dic
 
     def convert_moldict(self):
         """ Converting the molecular structure into the format required for calculations. """
 
-        self.atom_labels = []
-        self.x_coords = []
-        self.y_coords = []
-        self.z_coords = []
+        self.input_dict['molecule']['atom_labels'] = []
+        self.input_dict['molecule']['x_coords'] = []
+        self.input_dict['molecule']['y_coords'] = []
+        self.input_dict['molecule']['z_coords'] = []
         for j in self.moldict.keys():
-            self.atom_labels.append(self.moldict[j].split()[0])
-            self.x_coords.append(self.moldict[j].split()[1])
-            self.y_coords.append(self.moldict[j].split()[2])
-            self.z_coords.append(self.moldict[j].split()[3])
-        print(self.atom_labels, self.x_coords, self.y_coords, self.z_coords)
-
-
+            self.input_dict['molecule']['atom_labels'].append(self.moldict[j].split()[0])
+            self.input_dict['molecule']['x_coords'].append(self.moldict[j].split()[1])
+            self.input_dict['molecule']['y_coords'].append(self.moldict[j].split()[2])
+            self.input_dict['molecule']['z_coords'].append(self.moldict[j].split()[3])
 
 if __name__ == '__main__':
-
-    # Reading the filename manually from the command prompt:
-    
     try:
+
+        # Reading the filename manually from the command prompt:
+
         filename = str(sys.argv[1])
+
+        # Calling the .parse method of the InputParser class:
+
+        input_dict = InputParser(filename).parse()
+        
+        if input_dict != None:
+            print('Groups and keywords with values: ', input_dict)
+
     except IndexError:
         print('Please select an input-file following this scheme:')
         print('python3 input_parser.py <input-file>')
         sys.exit()
  
- # Creating an instance of the InputParser class:
-    fn = InputParser(filename)
-
-    if fn.parse_success:
-        print('Groups and keywords with values: ', fn.groupdict)
-        print('\nNumber of atoms, type and xyz coordinates: ', fn.moldict)
-
-
