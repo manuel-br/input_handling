@@ -1,0 +1,37 @@
+# template for VeloxChem input files
+
+##########################################################################################
+# UPPERCASE keywords are mandatory
+# lowercase keywords are optional
+# possible keyword-values in brackets, UPPERCASE if a value is required, lowercase when not
+# different variants of values are listed
+#########################################################################################
+
+@JOBTYPE
+TASK: [SINGLE POINT, SP, GEOMETRY OPTIMIZATION, GEOMETRY, OPT]
+METHOD: [HARTREE-FOCK, HF]
+correlation: []
+@END
+
+@METHOD SETTINGS
+functional: [B3LYP, CAM-B3LYP, PBE]
+@END
+
+@MOLECULE
+CHARGE: RANGE(10)
+MULTIPLICITY: RANGE(10)
+UNITS: [AU, ANGS]
+BASIS: [DEF2-SVP, DEF2-TZVP, CC-PVTZ, CCPVDZ]
+BASIS PATH: <PATH>
+xyz: [ATOMTYPE, X_COORD, Y_COORD, Z_COORD]
+@END
+
+@specifications
+kind: [kind1, kind2]
+stepsize: range(1000)
+print: range(10)
+@end
+
+
+
+
