@@ -56,6 +56,12 @@ class InputParser:
             #self.check_moldict()
             self.convert_moldict()
 
+            if self.input_dict['molecule']['units'] == 'angs':
+
+                # converting angstroms to atomic units
+
+                self.convert_units()
+
             return self.input_dict
 
     def parse_success(self):
@@ -151,11 +157,21 @@ class InputParser:
         self.input_dict['molecule']['x_coords'] = []
         self.input_dict['molecule']['y_coords'] = []
         self.input_dict['molecule']['z_coords'] = []
-        for j in self.moldict.keys():
-            self.input_dict['molecule']['atom_labels'].append(self.moldict[j].split()[0])
-            self.input_dict['molecule']['x_coords'].append(self.moldict[j].split()[1])
-            self.input_dict['molecule']['y_coords'].append(self.moldict[j].split()[2])
-            self.input_dict['molecule']['z_coords'].append(self.moldict[j].split()[3])
+        for m in self.moldict.keys():
+            self.input_dict['molecule']['atom_labels'].append(self.moldict[m].split()[0])
+            self.input_dict['molecule']['x_coords'].append(float(self.moldict[m].split()[1]))
+            self.input_dict['molecule']['y_coords'].append(float(self.moldict[m].split()[2]))
+            self.input_dict['molecule']['z_coords'].append(float(self.moldict[m].split()[3]))
+
+    def convert_units(self):
+        """ Converting molecule coordinates form angstroms to atomic units. """
+
+        coords = ['x_coords', 'y_coords', 'z_coords']
+
+        for n in coords:
+            for p in range(len(self.input_dict['molecule'][n])):
+                self.input_dict['molecule'][n][p] = self.input_dict['molecule'][n][p] / 0.52917721092
+
 
 if __name__ == '__main__':
     try:
